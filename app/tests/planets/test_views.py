@@ -58,3 +58,16 @@ def test_add_planet_invalid_json_keys(client):
 
     planets = Planet.objects.all()
     assert len(planets) == 0
+
+
+@pytest.mark.django_db
+def test_get_single_planet(client):
+    planet = Planet.objects.create(name="Earth", population=8_100_000_000)
+    resp = client.get(f"/api/planets/{planet.id}/")
+    assert resp.status_code == 200
+    assert resp.data["name"] == "Earth"
+
+
+def test_get_single_planet_incorrect_id(client):
+    resp = client.get(f"/api/planets/foo/")
+    assert resp.status_code == 404
