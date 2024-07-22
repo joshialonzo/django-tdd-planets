@@ -8,6 +8,11 @@ from .serializers import PlanetSerializer
 
 
 class PlanetList(APIView):
+    def get(self, request, format=None):
+        planets = Planet.objects.all()
+        serializer = PlanetSerializer(planets, many=True)
+        return Response(serializer.data)
+
     def post(self, request, format=None):
         serializer = PlanetSerializer(data=request.data)
         if serializer.is_valid():
