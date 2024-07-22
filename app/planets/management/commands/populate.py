@@ -3,6 +3,8 @@ from gql.transport.aiohttp import AIOHTTPTransport
 
 from django.core.management.base import BaseCommand, CommandError
 
+from planets.models import Planet
+
 
 class Command(BaseCommand):
     help = "Populate the database with planets"
@@ -18,14 +20,23 @@ class Command(BaseCommand):
         return client.execute(query)
     
     def get_planets(self):
-        client = self.init_gql_client(self.url)
-        result = self.execute_query(client)
-        return result["allPlanets"]["planets"]
+        try:
+            client = self.init_gql_client(self.url)
+            result = self.execute_query(client)
+            return result["allPlanets"]["planets"]
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f"Error: {e}"))
+            return []
 
     def print_planets(self, planets):
         print(planets)
         for planet in planets:
             planet_name = planet["name"]
+            population = planet["population"]
+            Planet.objects.update_or_create(
+                name=planet_name,
+                defaults={"population": population},
+            )
             self.stdout.write(self.style.SUCCESS(f"Planet: {planet_name}"))
 
     def handle(self, *args, **options):

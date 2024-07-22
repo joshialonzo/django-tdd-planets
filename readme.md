@@ -15,7 +15,7 @@ docker-compose exec planets pytest
 ## Populate the database
 
 ```bash
-docker-compose exec planets python manage.py query_planets
+docker-compose exec planets python manage.py populate
 ```
 
 ## Create a super user
