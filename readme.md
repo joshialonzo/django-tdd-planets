@@ -18,6 +18,24 @@ docker-compose exec planets pytest
 docker-compose exec planets python manage.py query_planets
 ```
 
+## Create a super user
+
+```bash
+docker-compose exec planets python manage.py createsuperuser
+```
+
+## Models
+
+* Planet
+    * name
+    * population
+    * terrains
+    * climates
+* Terrain
+    * name
+* Climate
+    * name
+
 ## References
 
 * [GraphQL Clients](https://graphql.org/graphql-js/graphql-clients/)

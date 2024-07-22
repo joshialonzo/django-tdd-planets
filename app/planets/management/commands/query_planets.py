@@ -23,6 +23,7 @@ class Command(BaseCommand):
         return result["allPlanets"]["planets"]
 
     def print_planets(self, planets):
+        print(planets)
         for planet in planets:
             planet_name = planet["name"]
             self.stdout.write(self.style.SUCCESS(f"Planet: {planet_name}"))
