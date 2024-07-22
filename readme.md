@@ -1,3 +1,23 @@
+## Run the project
+
+Install Docker and Docker Compose, then run:
+
+```bash
+docker-compose up -d --build
+```
+
+## Run tests
+
+```bash
+docker-compose exec planets pytest
+```
+
+## Populate the database
+
+```bash
+docker-compose exec planets python manage.py query_planets
+```
+
 ## References
 
 * [GraphQL Clients](https://graphql.org/graphql-js/graphql-clients/)
