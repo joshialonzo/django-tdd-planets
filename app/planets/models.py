@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
 
 class Planet(models.Model):
     name = models.CharField(max_length=255)
-    population = models.BigIntegerField()
+    population = models.BigIntegerField(null=True)
 
     def __str__(self):
         return self.name
