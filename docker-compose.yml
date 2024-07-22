@@ -8,3 +8,16 @@ services:
       - 8009:8000
     env_file:
       - ./app/.env.dev
+    depends_on:
+      - planets-db
+  planets-db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=planets
+      - POSTGRES_PASSWORD=planets
+      - POSTGRES_DB=planets_dev
+
+volumes:
+  postgres_data:
