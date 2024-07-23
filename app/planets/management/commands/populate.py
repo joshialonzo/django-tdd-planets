@@ -3,6 +3,7 @@ from gql.transport.aiohttp import AIOHTTPTransport
 
 from django.core.management.base import BaseCommand, CommandError
 
+from planets.models import Climate
 from planets.models import Planet
 from planets.models import Terrain
 
@@ -44,10 +45,16 @@ class Command(BaseCommand):
             terrain_obj, _ = Terrain.objects.get_or_create(name=terrain)
             planet.terrains.add(terrain_obj)
 
+    def add_climates_to_planet(self, planet, climates):
+        for climate in climates:
+            climate_obj, _ = Climate.objects.get_or_create(name=climate)
+            planet.climates.add(climate_obj)
+
     def populate_database(self, planets):
         for planet in planets:
             planet_obj = self.create_or_update_planet(planet)
             self.add_terrains_to_planet(planet_obj, planet.get("terrains", []))
+            self.add_climates_to_planet(planet_obj, planet.get("climates", []))
 
     def handle(self, *args, **options):
         self.stdout.write("Querying planets...")

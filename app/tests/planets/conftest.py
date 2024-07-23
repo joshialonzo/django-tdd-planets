@@ -1,6 +1,6 @@
 import pytest
 
-
+from planets.models import Climate
 from planets.models import Planet
 from planets.models import Terrain
 
@@ -22,3 +22,11 @@ def add_terrain():
         terrain = Terrain.objects.create(name=name)
         return terrain
     return _add_terrain
+
+
+@pytest.fixture(scope="function")
+def add_climate():
+    def _add_climate(name):
+        climate = Climate.objects.create(name=name)
+        return climate
+    return _add_climate

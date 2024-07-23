@@ -1,5 +1,6 @@
 import pytest
 
+from planets.models import Climate
 from planets.models import Planet
 from planets.models import Terrain
 
@@ -30,3 +31,15 @@ def test_planet_model_with_two_terrains():
     assert planet.name == "Mars"
     assert planet.population == None
     assert planet.terrains.count() == 2
+
+
+@pytest.mark.django_db
+def test_planet_model_with_two_climates():
+    planet = Planet.objects.create(name="Mars")
+    climate_one = Climate.objects.create(name="arid")
+    climate_two = Climate.objects.create(name="cold")
+    planet.climates.add(climate_one)
+    planet.climates.add(climate_two)
+    assert planet.name == "Mars"
+    assert planet.population == None
+    assert planet.climates.count() == 2

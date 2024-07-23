@@ -10,12 +10,20 @@ class Planet(models.Model):
     name = models.CharField(max_length=255)
     population = models.BigIntegerField(null=True)
     terrains = models.ManyToManyField("Terrain", related_name="planets")
+    climates = models.ManyToManyField("Climate", related_name="planets")
 
     def __str__(self):
         return self.name
 
 
 class Terrain(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class Climate(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):

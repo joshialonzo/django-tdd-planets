@@ -167,3 +167,20 @@ def test_add_planet_with_terrains(client, add_planet, add_terrain):
     assert len(resp.data["terrains"]) == 2
     assert resp.data["terrains"][0]["name"] == "desert"
     assert resp.data["terrains"][1]["name"] == "mountain"
+
+
+@pytest.mark.django_db
+def test_add_planet_with_climates(client, add_planet, add_climate):
+    planet = add_planet(name="Earth", population=8_100_000_000)
+    terrain = add_climate(name="temperate")
+    planet.climates.add(terrain)
+
+    resp = client.get(
+        f"/api/planets/{planet.id}/",
+        content_type="application/json"
+    )
+    assert resp.status_code == 200
+    assert resp.data["name"] == "Earth"
+    assert resp.data["population"] == 8_100_000_000
+    assert len(resp.data["climates"]) == 1
+    assert resp.data["climates"][0]["name"] == "temperate"
