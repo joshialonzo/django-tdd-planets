@@ -4,6 +4,7 @@ from gql.transport.aiohttp import AIOHTTPTransport
 from django.core.management.base import BaseCommand, CommandError
 
 from planets.models import Planet
+from planets.models import Terrain
 
 
 class Command(BaseCommand):
@@ -28,21 +29,30 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"Error: {e}"))
             return []
 
-    def print_planets(self, planets):
-        print(planets)
+    def create_or_update_planet(self, planet):
+        planet_name = planet["name"]
+        population = planet["population"]
+        planet, _ = Planet.objects.update_or_create(
+            name=planet_name,
+            defaults={"population": population},
+        )
+        self.stdout.write(self.style.SUCCESS(f"Planet: {planet_name}"))
+        return planet
+
+    def add_terrains_to_planet(self, planet, terrains):
+        for terrain in terrains:
+            terrain_obj, _ = Terrain.objects.get_or_create(name=terrain)
+            planet.terrains.add(terrain_obj)
+
+    def populate_database(self, planets):
         for planet in planets:
-            planet_name = planet["name"]
-            population = planet["population"]
-            Planet.objects.update_or_create(
-                name=planet_name,
-                defaults={"population": population},
-            )
-            self.stdout.write(self.style.SUCCESS(f"Planet: {planet_name}"))
+            planet_obj = self.create_or_update_planet(planet)
+            self.add_terrains_to_planet(planet_obj, planet.get("terrains", []))
 
     def handle(self, *args, **options):
         self.stdout.write("Querying planets...")
 
         planets = self.get_planets()
-        self.print_planets(planets)
+        self.populate_database(planets)
 
         self.stdout.write("Done!")

@@ -147,3 +147,23 @@ def test_update_planet_invalid_json_keys(client, add_planet):
         content_type="application/json",
     )
     assert resp.status_code == 400
+
+
+@pytest.mark.django_db
+def test_add_planet_with_terrains(client, add_planet, add_terrain):
+    planet = add_planet(name="Earth", population=8_100_000_000)
+    terrain_one = add_terrain(name="desert")
+    terrain_two = add_terrain(name="mountain")
+    planet.terrains.add(terrain_one)
+    planet.terrains.add(terrain_two)
+
+    resp = client.get(
+        f"/api/planets/{planet.id}/",
+        content_type="application/json"
+    )
+    assert resp.status_code == 200
+    assert resp.data["name"] == "Earth"
+    assert resp.data["population"] == 8_100_000_000
+    assert len(resp.data["terrains"]) == 2
+    assert resp.data["terrains"][0]["name"] == "desert"
+    assert resp.data["terrains"][1]["name"] == "mountain"

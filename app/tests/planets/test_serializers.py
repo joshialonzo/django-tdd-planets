@@ -1,4 +1,5 @@
 from planets.serializers import PlanetSerializer
+from planets.serializers import TerrainSerializer
 
 
 def test_valid_planet_serializer():
@@ -18,6 +19,26 @@ def test_invalid_planet_serializer():
         "population": 1000000,
     }
     serializer = PlanetSerializer(data=invalid_serializer_data)
+    assert not serializer.is_valid()
+    assert serializer.validated_data == {}
+    assert serializer.data == invalid_serializer_data
+    assert serializer.errors == {"name": ["This field is required."]}
+
+
+def test_valid_terrain_serializer():
+    valid_serializer_data = {
+        "name": "desert",
+    }
+    serializer = TerrainSerializer(data=valid_serializer_data)
+    assert serializer.is_valid()
+    assert serializer.validated_data == valid_serializer_data
+    assert serializer.data == valid_serializer_data
+    assert serializer.errors == {}
+
+
+def test_valid_terrain_serializer():
+    invalid_serializer_data = {}
+    serializer = TerrainSerializer(data=invalid_serializer_data)
     assert not serializer.is_valid()
     assert serializer.validated_data == {}
     assert serializer.data == invalid_serializer_data
