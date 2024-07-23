@@ -81,3 +81,25 @@ def test_get_all_planets(client, add_planet):
     assert resp.status_code == 200
     assert resp.data[0]["name"] == planet_one.name
     assert resp.data[1]["name"] == planet_two.name
+
+
+@pytest.mark.django_db
+def test_remove_planet(client, add_planet):
+    planet = add_planet(name="Earth", population=8_100_000_000)
+
+    resp = client.get(f"/api/planets/{planet.id}/")
+    assert resp.status_code == 200
+    assert resp.data["name"] == "Earth"
+
+    resp_two = client.delete(f"/api/planets/{planet.id}/")
+    assert resp_two.status_code == 204
+
+    resp_three = client.get("/api/planets/")
+    assert resp_three.status_code == 200
+    assert len(resp_three.data) == 0
+
+
+@pytest.mark.django_db
+def test_remove_planet_incorrect_id(client):
+    resp = client.delete(f"/api/planets/99/")
+    assert resp.status_code == 404

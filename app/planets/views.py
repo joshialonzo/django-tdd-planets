@@ -32,3 +32,8 @@ class PlanetDetail(APIView):
         planet = self.get_object(pk)
         serializer = PlanetSerializer(planet)
         return Response(serializer.data)
+
+    def delete(self, request, pk, format=None):
+        planet = self.get_object(pk)
+        planet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
